@@ -7,3 +7,4 @@ Collection of group projects for our fcc group.
 * Recommendations for keeping cool
 * Curating SF valley things to do
 * Programming events
+* Food Trucks locating (when/where/reviews)
