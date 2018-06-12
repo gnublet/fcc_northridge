@@ -8,4 +8,4 @@ Collection of group projects for our fcc group.
 * Curating SF valley things to do
 * Programming events
 * Food Trucks locating (when/where/reviews)
-* CodeBuddy
+* CodeBuddy (web/mobile app)
