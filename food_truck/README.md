@@ -1,6 +1,9 @@
 # Food-Truck-App
-What is the Food-Truck App?
+_What is the Food-Truck App?_
 > insert description here.
+
+_Who is the target market?_
+> vegan, vegetarian, or any
 
 ## 1. Envision what the application should do and define a set of goals.
 
