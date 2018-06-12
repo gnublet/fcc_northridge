@@ -1,2 +1,4 @@
-# Food Truck
-Web/mobile app for locating food trucks at given times.
+# Food 
+
+What does the application do?
+- Web/mobile app for locating food trucks at given times.
