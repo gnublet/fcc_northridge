@@ -9,4 +9,4 @@ Collection of group projects for our fcc group.
 * Programming events
 * Food Trucks locating (when/where/reviews)
 * CodeBuddy (web/mobile app)
-* An interactive fiction  with Alexa/Google Home(a choose your own like adventure)
+* An interactive fiction (something similar to a choose your own adventure) with Alexa/Google Home
