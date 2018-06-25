@@ -1,0 +1,11 @@
+# RESTful Routes
+
+| NAME | PATH | VERB | PURPOSE | MONGOOSE METHOD |
+| ------------------------------------------------------------------------------------------ |
+| INDEX | / | GET | list all food trucks | .find() |
+| NEW | /new | GET | show new food truck form | n/a |
+| CREATE | / | POST | create new food truck and redir | .create() |
+| SHOW | /:id | GET | show info about food truck | .findById() |
+| EDIT | /:id/edit | GET | show edit form for food truck | .findById() |
+| UPATE | /:id | PUT | update food truck and redir | .findByIdAndUpdate() |
+| DESTROY | /:id | DELETE | delete food truck and redir | .findByIdAndRemove() |
