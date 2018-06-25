@@ -1,7 +1,7 @@
 # RESTful Routes
 
 | NAME | PATH | VERB | PURPOSE | MONGOOSE METHOD |
-| ------------------------------------------------------------------------------------------ |
+| --- | --- | --- | --- | --- |
 | INDEX | / | GET | list all food trucks | .find() |
 | NEW | /new | GET | show new food truck form | n/a |
 | CREATE | / | POST | create new food truck and redir | .create() |
