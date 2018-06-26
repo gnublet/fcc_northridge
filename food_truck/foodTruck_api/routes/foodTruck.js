@@ -7,7 +7,7 @@ router.route('/')
 .get(helpers.getTrucks)
 .post(helpers.createTruck);
 
-router.route('/id')
+router.route('/:id')
 .get(helpers.getTruck)
 .put(helpers.updateTruck)
 .delete(helpers.deleteTruck);
