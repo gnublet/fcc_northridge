@@ -7,5 +7,5 @@
 | CREATE | /api/foodtrucks/ | POST | create new food truck and redir | .create() |
 | SHOW | /api/foodTrucks/:id | GET | show info about food truck | .findById() |
 | EDIT | /api/foodtrucks/:id/edit | GET | show edit form for food truck | .findById() |
-| UPATE | /api/foodtrucks/:id | PUT | update food truck and redir | .findOneAndUpdate() |
+| UPDATE | /api/foodtrucks/:id | PUT | update food truck and redir | .findOneAndUpdate() |
 | DESTROY | /api/foodTrucks/:id | DELETE | delete food truck and redir | .remove() |
