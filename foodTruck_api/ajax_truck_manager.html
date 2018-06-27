@@ -174,7 +174,6 @@
             $('#cancel').hide(); // update cancel button
             $('#addTruck').show(); // restore the Add button
             resetForm(); // clear all form values
-            $('label.error').remove(); // remove any JQ validation error messages from the DOM
         }
 
         // when the edit button is clicked, we need to pull the data from the server via Truck record ID
@@ -223,7 +222,7 @@
                 $template.find(".location").text(data[i].location.coordinates.join(', '));
                 if (data[i].ratings) {$template.find(".rating").text(data[i].ratings.avgRating);}
                 if (data[i].metadata) {$template.find(".image").attr('href', data[i].metadata.image_url);}
-                $template.find(".vendor").attr('id', data[i]._id);
+                $template.filter(".vendor").attr('id', data[i]._id);
                 $("#all-trucks").append($template);
             }
         };
@@ -257,28 +256,29 @@
         function setFormValues(data, status, jqxhr) {
             console.log('Below is the response data for GET truck by ID:')
             console.log(data);
-            $('#vendorName').val(data[0].vendorName); // uses reponses data to set the corresponding values
-            $('#foodType').val(data[0].foodType);
-            $('#companyName').val(data[0].metadata.companyName);
-            $('#phoneNumber').val(data[0].metadata.phoneNumber);
-            $('#url').val(data[0].metadata.url);
-            $('#imageLink').val(data[0].metadata.imageLink);
-            $('#long').val(data[0].location.coordinates[0]);
-            $('#lat').val(data[0].location.coordinates[1]);
-            $('#avgRating').val(data[0].ratings.avgRating);
-            $('#numRatings').val(data[0].ratings.numRatings);
 
-            // loop through amenities array and check off any applicable boxes
-            data[0].amenities.forEach(amenity => $(`#${amenity}`).prop('checked', true))
-
-            // depending on value of vegan/vegetarian, check off the applicable box
-            $('#veganOptions').prop('checked', data[0].veganOptions);
-            $('#vegetarianOptions').prop('checked', data[0].vegetarianOptions);
-
-            $('#update-btn').attr('data-field', data[0]._id); // stores the Truck record ID in the update button's attributes
+            $('#update-btn').attr('data-field', data._id); // stores the Truck record ID in the update button's attributes
             $('#update-btn').show(); // display the hidden update btn
             $('#cancel').show(); // also the cancel btn
             $('#addTruck').hide(); // hide the Add Truck button because the form is now in "Edit Mode"
+
+            $('#vendorName').val(data.vendorName); // uses reponses data to set the corresponding values
+            $('#foodType').val(data.foodType);
+            $('#companyName').val(data.metadata.companyName);
+            $('#phoneNumber').val(data.metadata.phoneNumber);
+            $('#url').val(data.metadata.url);
+            $('#imageLink').val(data.metadata.imageLink);
+            $('#long').val(data.location.coordinates[0]);
+            $('#lat').val(data.location.coordinates[1]);
+            $('#avgRating').val(data.ratings.avgRating);
+            $('#numRatings').val(data.ratings.numRatings);
+
+            // loop through amenities array and check off any applicable boxes
+            data.amenities.forEach(amenity => $(`#${amenity}`).prop('checked', true));
+
+            // depending on value of vegan/vegetarian, check off the applicable box
+            $('#veganOptions').prop('checked', data.veganOptions);
+            $('#vegetarianOptions').prop('checked', data.vegetarianOptions);
         };
 
         function logError(data, status, jqxhr) { // simple log if something went wrong
