@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 var foodTruckSchema = new mongoose.Schema({
+    //POST on fields not working
     vendorName: String,
     location: {
     coordinates: [Number]
