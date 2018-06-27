@@ -27,7 +27,7 @@
             </div>
             <div class="form-group">
                 <label>Food Type</label>
-                <input type="text" class="form-control" id="foodType" name="foodType" placeholder="Latitude">
+                <input type="text" class="form-control" id="foodType" name="foodType" placeholder="Style/Type of Food">
             </div>
             <div class="form-group">
                 <label>Company/Coporate Name</label>
@@ -39,11 +39,11 @@
             </div>
             <div class="form-group">
                 <label>Company URL</label>
-                <input type="text" class="form-control" id="url" name="url" placeholder="Latitude">
+                <input type="text" class="form-control" id="url" name="url" placeholder="Website URL">
             </div>
             <div class="form-group">
                 <label>Company Image URL</label>
-                <input type="text" class="form-control" id="imageLink" name="imageLink" placeholder="Longitude">
+                <input type="text" class="form-control" id="imageLink" name="imageLink" placeholder="Company Image URL">
             </div>
             <label>
                 <input type="checkbox" id="veganOptions">Vegan Options?</label>
@@ -221,8 +221,8 @@
                 $template.find(".food-type").text(data[i].foodType);
                 $template.find(".amenities").text(data[i].amenities.join(', '));
                 $template.find(".location").text(data[i].location.coordinates.join(', '));
-                $template.find(".rating").text(data[i].ratings.avgRating);
-                $template.find(".image").attr('href', data[i].metadata.image_url);
+                if (data[i].ratings) {$template.find(".rating").text(data[i].ratings.avgRating);}
+                if (data[i].metadata) {$template.find(".image").attr('href', data[i].metadata.image_url);}
                 $template.find(".vendor").attr('id', data[i]._id);
                 $("#all-trucks").append($template);
             }
