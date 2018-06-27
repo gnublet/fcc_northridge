@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Food Trucks Mananger</title>
+    <!-- Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div class="container-form">
+        <h1>Food Trucks Manager</h1>
+        <form class="col-md-6" id="vendorForm">
+            <div class="form-group">
+                <label>Vendor Name</label>
+                <input type="text" class="form-control" id="vendorName" name="vendorName" placeholder="Vendor Name">
+            </div>
+            <div class="form-group">
+                <label>Food Type</label>
+                <input type="text" class="form-control" id="foodType" name="foodType" placeholder="Latitude">
+            </div>
+            <div class="form-group">
+                <label>Company/Coporate Name</label>
+                <input type="text" class="form-control" id="companyName" name="companyName" placeholder="Company Name">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number">
+            </div>
+            <div class="form-group">
+                <label>Company URL</label>
+                <input type="text" class="form-control" id="url" name="url" placeholder="Latitude">
+            </div>
+            <div class="form-group">
+                <label>Company Image URL</label>
+                <input type="text" class="form-control" id="imageLink" name="imageLink" placeholder="Longitude">
+            </div>
+            <label>
+                <input type="checkbox" id="veganOptions">Vegan Options?</label>
+            <label>
+                <input type="checkbox" id="vegetarianOptions">Vegetarian Options?</label>
+            <div class="form-group" id="amenities">
+                <h3>Amenities (check all that apply)</h3>
+                <label>
+                    <input type="checkbox" id="gluten-free" value="gluen-free">Gluten Free</label>
+                <label>&nbsp;
+                    <input type="checkbox" id="organic" value="organic">Organic</label>
+                <label>&nbsp;
+                    <input type="checkbox" id="seating" value="seating">Seating</label>
+            </div>
+            <div class="form-group">
+                <label>Longitude (Coordinates)</label>
+                <input type="text" class="form-control" id="long" name="long" placeholder="Longitude (ex: 34.37474)">
+            </div>
+            <div class="form-group">
+                <label>Latitude (Coordinates)</label>
+                <input type="text" class="form-control" id="lat" name="lat" placeholder="Latitude (ex: -118.324234)">
+            </div>
+            <div class="form-group">
+                <label>Rating</label>
+                <input type="text" class="form-control" id="avgRating" name="avgRating" placeholder="Enter a Number between 0 and 5">
+            </div>
+            <div class="form-group">
+                <label>Total Number of Ratings</label>
+                <input type="text" class="form-control" id="numRatings" name="numRatings" placeholder="Number of Ratings">
+            </div>
+            <button type="submit" id="addTruck" class="btn btn-primary">Add Truck</button>
+            <button id="cancel" class="btn">Cancel</button>
+        </form>
+    </div>
+
+    <div class="col-md-7">
+        <hr>
+        <button id="listAll">List All Trucks</button>
+        <hr>
+    </div>
+
+    <div class="col-md-7" id="all-trucks">
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- All your code goes below here-->
+
+    <!--  HTML TEMPLATE for later DOM manipulation -->
+    <script type="text/html" id="template">
+        <div class="vendor">
+            <h2 class="vendor-name"></h2>
+            <p>Style: <span class="food-type"></span></p>
+            <p>Amenities: <span class="amenities"></span></p>
+            <p>Location: <span class="location"></span></p>
+            <p>Rating: <span class="rating"></span></p>
+            <a class="image">[Image] because imgur blocks hotlinks</a><br>
+            <button class="edit-btn">Edit</button> <button class="btn-danger delete-btn">Delete</button>
+        </div>
+      </script>
+
+    <script type="text/javascript">
+        // set up defaults for future ajax functions
+        let url = 'https://ftruck-api.herokuapp.com/api/foodTrucks/';
+
+        // create an update button, insert it, then hide it & also hide the cancel button
+        let $updateBtn = $('<button id="update-btn" class="btn btn-primary">Update Truck</button>');
+        $('#addTruck').after($updateBtn);
+        $('#update-btn').hide()
+        $('#cancel').hide() // decided against also using this for Adding a Truck
+
+        // listeners
+        $('#addTruck').on('click', addTruck);
+        $('#update-btn').on('click', updateTruckData);
+        $('#cancel').on('click', cancelUpdate);
+        $('#listAll').on('click', getAllTrucks);
+        $('#all-trucks').on('click', '.edit-btn', editTruckById);
+        $('#all-trucks').on('click', '.delete-btn', deleteThisTruck);
+
+        // handlers + corresponding ajax methods
+
+        function addTruck(event) {
+            event.preventDefault(); // prevent browser reloading page, but also this breaks JQ validation, so
+            const settings = {
+                type: "POST", // Create = POST
+                success: addSuccessful, // callback function to update the DOM
+                error: logError,
+                data: getFormData() // function to grab the form values & return it here
+            };
+            $.ajax(url, settings);
+        }
+
+        function updateTruckData(event) {
+            event.preventDefault();
+            let vendorId = $('#update-btn').attr('data-field'); // grabs the record ID of the Truck being edited from update button
+            const settings = {
+                type: "PUT", // Update = PUT
+                success: updateSuccessful, // callback function which will refresh the entire DOM with all entities
+                error: logError,
+                data: getFormData() + '&id=' + vendorId // concatenate the record ID as required by the API along with form data
+            };
+            $.ajax(url + vendorId, settings); // add the Truck's record ID to the URL for a successful PUT
+        }
+
+        // GET data of all Trucks from the server
+        function getAllTrucks(event) {
+            if (event) { // necessary because a successful Add/Delete Truck will also call this function without passing a parameter
+                event.preventDefault();
+            }
+            const settings = {
+                type: "GET", // Request = GET
+                success: listAllTrucks, // callback function to insert the Trucks to DOM
+                error: logError
+            };
+            $.ajax(url, settings);
+        };
+
+        // when the cancel button is clicked OR called
+        function cancelUpdate(event) {
+            if (event) { // for when this is called by a different method
+                event.preventDefault();
+            };
+            $('#update-btn').attr('data-field', ''); // clear Truck record ID from update button attribute
+            $('#update-btn').hide(); // hide update button
+            $('#cancel').hide(); // update cancel button
+            $('#addTruck').show(); // restore the Add button
+            resetForm(); // clear all form values
+            $('label.error').remove(); // remove any JQ validation error messages from the DOM
+        }
+
+        // when the edit button is clicked, we need to pull the data from the server via Truck record ID
+        function editTruckById(event) {
+            event.preventDefault();
+            window.scrollTo(0, 0); // auto-scrolls to very top so user can easily see/edit the form
+            let vendorId = $(this).parent().prop('id'); // grabs & store this specific Truck's ID for use in URL below
+            const settings = { // set up ajax to request just this Truck's data
+                type: "GET",
+                success: setFormValues, // callback which will parse the server data & fill it to the forms
+                error: logError
+            };
+            $.ajax(url + vendorId, settings); // concatenates the Truck's ID to the URL
+        };
+
+        // delete button will send a DELETE request for this Truck's ID + remove the entire element from DOM
+        function deleteThisTruck(event) {
+            event.preventDefault();
+            let $recordId = $(this).parent().attr('id'); // used for the ajax url below
+            const settings = {
+                type: "DELETE",
+                success: deleteSuccessful, // callback upon a successful delete response from server
+                error: logError
+            };
+            $.ajax(url + $recordId, settings); // concatenates the Truck ID to the server URL
+            $(this).parent().remove(); // since delete button is a child of the div.Truck-box, we move up to parent then delete
+        };
+
+        // ** callback & supporting functions **
+
+        // clears all values from the forms
+        function resetForm() {
+            $('#vendorForm')[0].reset();
+        };
+
+        // this callback will accept the ajax response data and update the DOM with all the Trucks and their info
+        function listAllTrucks(data, status, jqxhr) {
+            console.log('Below is the response data for a GET all');
+            console.log(data);
+            $('#all-trucks').empty();
+            for (let i = 0; i < data.length; i++) {
+                const $template = $($("#template").html());
+                $template.find(".vendor-name").text(data[i].vendorName);
+                $template.find(".food-type").text(data[i].foodType);
+                $template.find(".amenities").text(data[i].amenities.join(', '));
+                $template.find(".location").text(data[i].location.coordinates.join(', '));
+                $template.find(".rating").text(data[i].ratings.avgRating);
+                $template.find(".image").attr('href', data[i].metadata.image_url);
+                $template.find(".vendor").attr('id', data[i]._id);
+                $("#all-trucks").append($template);
+            }
+        };
+
+        // callback when a Truck was successfully added
+        function addSuccessful(data, status, jqxhr) {
+            console.log('Truck successfully ADDED');
+            resetForm(); // clear all form values
+            getAllTrucks(); // refresh data from server & then insert into the DOM
+        };
+
+        // callback when an UPDATE (PUT) is successful
+        function updateSuccessful(data, status, jqxhr) {
+            console.log('Truck successfully UPDATED');
+            cancelUpdate(); // just a function that clears the form values, hides the Update + Cancel buttons, and restores the Add Truck button
+            getAllTrucks(); // grab server data & refresh the DOM
+        };
+
+        // simple confirmation log, because the handler function + ajax request already did all of the work
+        function deleteSuccessful(data, status, jqxhr) {
+            console.log('delete worked'); // no need to refresh the DOM with data from server
+        }
+
+        // grabs all the form name:value pairs and combines them into a single string
+        // ** NOTE ** this function ignores checkboxes like veganOptions & amenities, so it needs to be modified/FIXED
+        function getFormData() {
+            return $('#vendorForm').serialize();
+        };
+
+        // callback for a successful GET of a Truck ID via the Edit button
+        function setFormValues(data, status, jqxhr) {
+            console.log('Below is the response data for GET truck by ID:')
+            console.log(data);
+            $('#vendorName').val(data[0].vendorName); // uses reponses data to set the corresponding values
+            $('#foodType').val(data[0].foodType);
+            $('#companyName').val(data[0].metadata.companyName);
+            $('#phoneNumber').val(data[0].metadata.phoneNumber);
+            $('#url').val(data[0].metadata.url);
+            $('#imageLink').val(data[0].metadata.imageLink);
+            $('#long').val(data[0].location.coordinates[0]);
+            $('#lat').val(data[0].location.coordinates[1]);
+            $('#avgRating').val(data[0].ratings.avgRating);
+            $('#numRatings').val(data[0].ratings.numRatings);
+
+            // loop through amenities array and check off any applicable boxes
+            data[0].amenities.forEach(amenity => $(`#${amenity}`).prop('checked', true))
+
+            // depending on value of vegan/vegetarian, check off the applicable box
+            $('#veganOptions').prop('checked', data[0].veganOptions);
+            $('#vegetarianOptions').prop('checked', data[0].vegetarianOptions);
+
+            $('#update-btn').attr('data-field', data[0]._id); // stores the Truck record ID in the update button's attributes
+            $('#update-btn').show(); // display the hidden update btn
+            $('#cancel').show(); // also the cancel btn
+            $('#addTruck').hide(); // hide the Add Truck button because the form is now in "Edit Mode"
+        };
+
+        function logError(data, status, jqxhr) { // simple log if something went wrong
+            console.log('Error! See below');
+            console.log(data);
+        };
+
+    </script>
+
+</body>
+
+</html>
