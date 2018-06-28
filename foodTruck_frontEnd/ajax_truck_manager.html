@@ -52,7 +52,7 @@
             <div class="form-group" id="amenities">
                 <h3>Amenities (check all that apply)</h3>
                 <label>
-                    <input type="checkbox" id="gluten-free" value="gluen-free">Gluten Free</label>
+                    <input type="checkbox" id="gluten-free" value="gluten-free">Gluten Free</label>
                 <label>&nbsp;
                     <input type="checkbox" id="organic" value="organic">Organic</label>
                 <label>&nbsp;
@@ -246,14 +246,21 @@
             console.log('delete worked'); // no need to refresh the DOM with data from server
         }
 
-        // ** NOTE ** still need to fix checkboxes like veganOptions & amenities
-        function getFormData(id) {
+        function getAmenities() {
+            let checkedAmenities = [];
+            $('#amenities input:checked').each(function(index, elem) {
+                checkedAmenities.push($(this).val());
+                });
+            return checkedAmenities;
+        }
+        
+        function getFormData(id) { // reads the form values & converts it all to json as formatted below
 
             const manualJSON = {
                 "location": {
                     "coordinates": [
-                        $('#long').val(),
-                        $('#lat').val()
+                    parseFloat(document.getElementById('long').value), // converts number String to a number with decimals
+                    parseFloat(document.getElementById('lat').value)
                     ],
                     "type": "Point"
                 },
@@ -264,21 +271,19 @@
                     "phoneNumber": $('#phoneNumber').val()
                 },
                 "ratings": {
-                    "avgRating": $('#avgRating').val(),
-                    "numRatings": $('#numRatings').val()
+                    "avgRating": document.getElementById('avgRating').value, // should prefix parseFloat
+                    "numRatings": document.getElementById('numRatings').value // should prefix parseInt
                 },
-                "amenities": [
-                    "gluten-free",
-                    "organic",
-                    "drinks"
-                ],
+                "amenities": getAmenities(), // returns an array with the truck's amenities, if any
                 "vendorName": $('#vendorName').val(),
                 "foodType": $('#foodType').val(),
-                "veganOptions": false,
-                "vegetarianOptions": false
+                "veganOptions": document.getElementById('veganOptions').checked,
+                "vegetarianOptions": document.getElementById('vegetarianOptions').checked
             };
-            id ? manualJSON._id = id: null;
-            return manualJSON;
+            
+            id ? manualJSON._id = id: null; // if this function is passed an id (for Update/PUT), add an _id property to above  
+            
+            return manualJSON; // returns this to the AJAX function that called this
         };
 
         // callback for a successful GET of a Truck ID via the Edit button
