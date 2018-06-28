@@ -1,43 +1,37 @@
 var mongoose = require('mongoose');
 
 var foodTruckSchema = new mongoose.Schema({
-    //POST on fields not working
     vendorName: String,
     location: {
-    coordinates: [Number]
+        type: "Point",
+    coordinates: [String]
     },
     foodType: String,
     metadata: {
     url: String,
-    phoneNum: Number,
+    phoneNum: String,
     companyName: String,
     image_link: String
     },
-    veganOptions: {
-        type: Boolean,
-        default: false
-    },
-    vegetarianOptions:{
-        type: Boolean,
-        default: false
-    },
+    veganOptions: Boolean,
+    vegetarianOptions: Boolean,
     amenities: [String],
     ratings: {
-    avgRating: Number,
-    numRatings: Number
+    avgRating: String,
+    numRatings: String
     },
-    spacetime:
-    {
-    spacetime: Number,
-    lat: Number,
-    long: Number,
-    zip_code: Number,
-    time_start: Number,
-    time_end: Number,
-    date_start: Date,
-    date_end: Date,
-    timezone: String
-    }
+    // spacetime:
+    // {
+    // spacetime: Number,
+    // lat: Number,
+    // long: Number,
+    // zip_code: Number,
+    // time_start: Number,
+    // time_end: Number,
+    // date_start: Date,
+    // date_end: Date,
+    // timezone: String
+    // }
     });
 
 var foodTruck = mongoose.model('foodTruck', foodTruckSchema);
