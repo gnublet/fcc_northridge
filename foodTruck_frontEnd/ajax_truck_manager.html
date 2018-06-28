@@ -146,7 +146,7 @@
                 type: "PUT", // Update = PUT
                 success: updateSuccessful, // callback function which will refresh the entire DOM with all entities
                 error: logError,
-                data: getFormData() + '&id=' + vendorId // concatenate the record ID as required by the API along with form data
+                data: getFormData(vendorId) // concatenate the record ID as required by the API along with form data
             };
             $.ajax(url + vendorId, settings); // add the Truck's record ID to the URL for a successful PUT
         }
@@ -220,8 +220,8 @@
                 $template.find(".food-type").text(data[i].foodType);
                 $template.find(".amenities").text(data[i].amenities.join(', '));
                 $template.find(".location").text(data[i].location.coordinates.join(', '));
-                if (data[i].ratings) {$template.find(".rating").text(data[i].ratings.avgRating);}
-                if (data[i].metadata) {$template.find(".image").attr('href', data[i].metadata.image_url);}
+                if (data[i].ratings) { $template.find(".rating").text(data[i].ratings.avgRating); }
+                if (data[i].metadata) { $template.find(".image").attr('href', data[i].metadata.image_url); }
                 $template.filter(".vendor").attr('id', data[i]._id);
                 $("#all-trucks").append($template);
             }
@@ -248,8 +248,38 @@
 
         // grabs all the form name:value pairs and combines them into a single string
         // ** NOTE ** this function ignores checkboxes like veganOptions & amenities, so it needs to be modified/FIXED
-        function getFormData() {
-            return $('#vendorForm').serialize();
+        function getFormData(id) {
+
+            const manualJSON = {
+                "location": {
+                    "coordinates": [
+                        $('#long').val(),
+                        $('#lat').val()
+                    ],
+                    "type": "Point"
+                },
+                "metadata": {
+                    "url": $('#url').val(),
+                    "companyName": $('#companyName').val(),
+                    "imageLink": $('#imageLink').val(),
+                    "phoneNumber": $('#phoneNumber').val()
+                },
+                "ratings": {
+                    "avgRating": $('#avgRating').val(),
+                    "numRatings": $('#numRatings').val()
+                },
+                "amenities": [
+                    "gluten-free",
+                    "organic",
+                    "drinks"
+                ],
+                "vendorName": $('#vendorName').val(),
+                "foodType": $('#foodType').val(),
+                "veganOptions": false,
+                "vegetarianOptions": false
+            };
+            id ? manualJSON._id = id: null;
+            return manualJSON;
         };
 
         // callback for a successful GET of a Truck ID via the Edit button
