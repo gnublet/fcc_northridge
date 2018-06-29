@@ -1,9 +1,11 @@
 var express = require('express'),
         foodTruckRoutes = require('./routes/foodTruck'),
         app = express(),
+        cors = require('cors'),
         bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
+app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use('/api/foodtrucks', foodTruckRoutes);
 
