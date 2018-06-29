@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var foodTruckSchema = new mongoose.Schema({
     vendorName: String,
-    location: { type: String, coordinates: [Number],},
+    location: { type: String, coordinates: [Number]},
     foodType: String,
     metadata: {
         url: String,
@@ -16,7 +16,7 @@ var foodTruckSchema = new mongoose.Schema({
     ratings: {
         avgRating: { type: Number, min: 0, max: 5 },
         numRatings: Number
-    },
+    }
     // spacetime:
     // {
     // spacetime: Number,
