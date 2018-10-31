@@ -21,3 +21,15 @@ Collection of group projects for our fcc group.
 * Food Trucks locating (when/where/reviews)
 * CodeBuddy (web/mobile app)
 * An interactive fiction (something similar to a choose your own adventure) with Alexa/Google Home
+
+# TLDR: How to clone this repo:
+## On the command line (on Linux or Mac):
+git clone https://github.com/gnublet/fcc_northridge.git
+## checkout a branch for yourself
+git checkout -b <your_branch_name>
+## make some changes on your local computer, then
+git add <changed_file.txt>
+## commit those changes
+git commit -m '<your message>'
+## push those branches
+git push origin <your_branch_name>
